@@ -4,13 +4,16 @@
 **Category:** SQL Injection
 
 ## Vulnerability
+SQL injection in the login form's username parameter. User-supplied input is 
+concatenated directly into a SQL query without sanitization or parameterization, 
+allowing an attacker to manipulate query logic and bypass authentication entirely.
 
 ## Discovery
 - Lab prompts that vulnerability is in the login handler
 - Selected my profile path is /my-account redirects to login
 - Attempted to login with admin/password
 - Added `'` into the body of the username/password query. Returns 500
-- Tried csrf=vf6OD9CcpogtYbmKTmTQkQ5HPMgLe4BB&'+OR_1=1-- returned missing parameter
+- Tried csrf=[token]&'+OR_1=1-- returned missing parameter
 - Tried username='+OR+1=1--+-&password=password Attained access to administrator account
 
 
@@ -37,7 +40,7 @@ regardless of input content.
 
 ## SQL Query (before/after)
 Before: `SELECT * FROM users WHERE username = 'foo' AND password = 'bar'`
-After:  `SELECT * FROM users WHERE username = '' OR 1=1--' AND password = 'password' '`
+After:  `SELECT * FROM users WHERE username = '' OR 1=1--'`
 
 ## OWASP Reference
 A03:2021 Injection
