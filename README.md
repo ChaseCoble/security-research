@@ -16,9 +16,9 @@ and threat analysis.
 
 ## Profiles
 
-- HTB: [chasecoblesec](https://profile.hackthebox.com/profile/019efad1-26da-7267-a5ab-926086869cb3)
+- HTB: [chasecoblesec](https://profile.hackthebox.com/profile/019e47cb-8e87-7129-91de-68707cae4993)
 - BTLO: [CobleSecurity](https://blueteamlabs.online/public/user/67bd24f789f6a2ac6e9b01)
-- GitHub: [CobleSecurity](https://github.com/CobleSecurity)
+- GitHub: [CobleSecurity](https://github.com/ChaseCoble)
 
 ## Credentials
 
