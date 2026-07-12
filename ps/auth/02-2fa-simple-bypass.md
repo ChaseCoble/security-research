@@ -1,84 +1,40 @@
-# Authentication -  2FA Simple Bypass
+# Authentication - 2FA Simple Bypass
 **Platform:** PortSwigger Web Security Academy
 **Date:** 2026-07-09
 **Category:** Authentication
 
 ## Vulnerability
-The application returns observable differences in HTTP response length for valid 
-versus invalid usernames during authentication. Combined with no rate limiting or 
-account lockout, this allows an attacker to enumerate valid usernames via automated 
-requests and subsequently brute force account passwords.
-
-
-## Discovery
-- Lab prompts that vulnerability is in bypassing the 2FA feature
-- Logged in with given credentials and recorded the 2FA workflow
-- Urls transfer between /login, /login2, then /my-account?id=username
-- Attempted to bypass to /my-account?id=target from home screen, and failed
-- Attempted to bypass after successful /login to /my-account and it was successful.
-
-
-## Exploitation
-Payload: Bypassed from /login2 to /my-account 
-
-## Impact# Authentication - 2FA Simple Bypass
-**Platform:** PortSwigger Web Security Academy
-**Date:** 2026-07-09
-**Category:** Authentication
-
-## Vulnerability
-Two-factor authentication is enforced via client-side navigation flow rather than 
-server-side session state. The application marks a session as authenticated after 
-the first login factor without requiring MFA completion, allowing direct navigation 
+Two-factor authentication is enforced via client-side navigation flow rather than
+server-side session state. The application marks a session as authenticated after
+the first login factor without requiring MFA completion, allowing direct navigation
 to authenticated endpoints.
 
 ## Discovery
-- Mapped authentication flow: /login → /login2 → MFA verification
-- Completed first factor with valid credentials
-- Observed session cookie set after /login before MFA completion
-- Navigated directly to /my-account bypassing /login2 entirely
-- Access granted without MFA code
+- Lab prompt indicated the vulnerability is in bypassing the 2FA feature
+- Logged in with given credentials and recorded the 2FA workflow
+- Mapped authentication flow: `/login` → `/login2` → `/my-account?id=username`
+- Attempted direct navigation to `/my-account?id=target` from the home screen (unauthenticated) — failed
+- Completed first factor with valid credentials via `/login`
+- Observed session cookie set after `/login`, before MFA completion at `/login2`
+- Navigated directly to `/my-account` from `/login2`, bypassing MFA entirely — access granted
 
 ## Exploitation
-Complete first factor login with valid credentials. Before submitting MFA code, 
-navigate directly to authenticated endpoint /my-account. Server grants access 
-without MFA verification.
+Complete first factor login with valid credentials via `/login`. Before submitting the MFA code at `/login2`, navigate directly to the authenticated endpoint `/my-account`. Server grants access without MFA verification, since the session was already marked authenticated after the first factor.
 
 ## Impact
-Complete MFA bypass. Attacker with valid credentials can bypass second factor 
-entirely, rendering MFA ineffective as a security control.
+Complete MFA bypass. An attacker with valid credentials (but no access to the second factor) can reach fully authenticated endpoints, rendering MFA ineffective as a security control.
 
 ## Mitigations
-**Primary:** Enforce MFA completion server-side before granting access to any 
-authenticated endpoint. Session state must not be marked fully authenticated 
-until all factors are verified.
+**Primary:** Enforce MFA completion server-side before granting access to any authenticated endpoint. Session state must not be marked fully authenticated until all factors are verified.
 
 **Defense in depth:**
-- Validate MFA completion on every authenticated request, not just /login2
+- Validate MFA completion on every authenticated request, not just at `/login2`
 - Implement server-side session flags distinguishing partial and full authentication
-- Redirect unauthenticated sessions to /login2 if MFA is incomplete
+- Redirect sessions with incomplete MFA to `/login2` if a fully authenticated endpoint is requested
 
 ## OWASP Reference
-A07:2021 Identification and Authentication Failures
+[A07:2025 – Identification and Authentication Failures](https://owasp.org/Top10/2025/A07_2025-Authentication_Failures/)
 
 ## CWE Reference
-CWE-287 Improper Authentication
-CWE-306 Missing Authentication for Critical Function
-
-## Mitigations
-**Primary:** Return identical error messages and response lengths for invalid 
-username and invalid password. Never reveal which field failed.
-
-**Defense in depth:**
-- Account lockout after N failed attempts
-- CAPTCHA on login forms
-- Rate limiting per IP
-- Multi-factor authentication
-- Generic error: "Invalid username or password" regardless of which failed
-
-## OWASP Reference
-A07:2021 Identification and Authentication Failures
-
-## CWE REFERENCE
-CWE-204 Observable Response Discrepancy
-CWE-307 Improper Restriction of Excessive Authentication Attempts
+- [CWE-287](https://cwe.mitre.org/data/definitions/287.html) — Improper Authentication
+- [CWE-306](https://cwe.mitre.org/data/definitions/306.html) — Missing Authentication for Critical Function

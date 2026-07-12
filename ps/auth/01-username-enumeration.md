@@ -44,8 +44,8 @@ username and invalid password. Never reveal which field failed.
 - Generic error: "Invalid username or password" regardless of which failed
 
 ## OWASP Reference
-A07:2021 Identification and Authentication Failures
+[A07:2025 Identification and Authentication Failures](https://owasp.org/Top10/2025/A07_2025-Authentication_Failures/)
 
 ## CWE REFERENCE
-CWE-204 Observable Response Discrepancy
-CWE-307 Improper Restriction of Excessive Authentication Attempts
+[CWE-204 Observable Response Discrepancy](https://cwe.mitre.org/data/definitions/204.html)
+[CWE-307 Improper Restriction of Excessive Authentication Attempts](https://cwe.mitre.org/data/definitions/307.html)
