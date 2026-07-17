@@ -21,6 +21,7 @@ Prototype pollution via an unsanitized `$rename` operator in the `/update` endpo
   - **Generic prototype pollution probe** — initially tested with an arbitrary key (`{"__proto__":{"polluted":"yes"}}`) checked against an unrelated `/create` response; came back negative, incorrectly ruling out pollution as a category rather than recognizing the test needed to target a specific, real internal property name rather than an arbitrary probe key
   - **`$where` operator / Mongo server-side JS RCE** — considered but not fully pursued once recognized that even successful `$where` execution would run inside `mongod`'s JS context, a separate process from Node, with no access to `process.env.FLAG`
   - **Direct Docker/network-level bypass** (`--resolve`, forged headers) — ruled out on reasoning; `req.connection.remoteAddress` reads the actual TCP socket, not any client-supplied header, and `--resolve` cannot forge a real source IP over a real network connection
+- Precise prototypes attained after web research. [Snyk Prototype Pollution](https://security.snyk.io/vuln/SNYK-JS-MONGOOSE-5777721)
 
 ## Exploitation
 `/update`'s handler passes the entire raw request body into `Note.findByIdAndUpdate()` as the update document, with no filtering beyond Mongoose's schema-field strictness — which blocks *new* arbitrary fields on the Note schema itself, but does not block MongoDB update operators (`$rename`, `$set`, etc.) from being processed as valid update syntax, nor does it prevent those operators from targeting `__proto__`.
@@ -64,9 +65,17 @@ Full authentication-boundary bypass on an IP-restricted internal endpoint, witho
 - MongoDB driver-level or Mongoose-level protections against operator injection in update documents (reject `$`-prefixed top-level keys in any user-supplied update body by default)
 - Regularly audit any endpoint that passes `req.body` (or any subset of it) directly into a database write operation without an explicit allowlist
 
+## Conclusion
+This challenge underscored the importance of tracking supply-chain security alongside application-level logic — the vulnerability wasn't a mistake unique to this app's code, but a known CVE (CVE-2023-3696) in Mongoose itself, patched in 7.3.4. The core failure predates any specific challenge: passing unsanitized user input into a recursive merge or update operation violates a basic secure-coding principle regardless of language or framework — mutable global state (here, `Object.prototype`) should never be reachable from untrusted input.
+
+The deeper lesson was methodological, not just technical. Several plausible attack surfaces (SSRF, SSTI, generic pollution probing) were tested and correctly ruled out before the actual vector was found — that dead-end work wasn't wasted, it narrowed the problem space and built confidence in the eventual finding. The specific exploitation path (`$rename` targeting `_peername`) came from directed research into known Mongoose CVEs once the general pollution hypothesis was confirmed plausible, not from first-principles guessing. It is importable to be honest about that distinction, since recognizing when to pull from documented prior work versus continuing to brute-force a novel path is itself a skill worth building.
+
 ## OWASP Reference
 [A01:2025 – Broken Access Control](https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/) — the finding's ultimate impact is an authorization/access-control bypass on an IP-restricted endpoint; the 2025 edition's expanded scope for this category explicitly covers authorization-failure patterns of this shape. Note: no OWASP source consulted gives an explicit, unambiguous category assignment for prototype pollution specifically — this mapping reflects the vulnerability's impact rather than a confirmed OWASP categorization, and is worth revisiting if OWASP publishes clearer guidance.
 
 ## CWE Reference
 - [CWE-1321](https://cwe.mitre.org/data/definitions/1321.html) — Improperly Controlled Modification of Object Prototype Attributes ('Prototype Pollution')
 - [CWE-943](https://cwe.mitre.org/data/definitions/943.html) — Improper Neutralization of Special Elements in Data Query Logic
+
+## Relevant CVEs
+-[CVE-2023-3696](https://www.cve.org/CVERecord?id=CVE-2023-3696)
