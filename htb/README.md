@@ -17,7 +17,14 @@ Boot-to-root penetration testing challenges.
 
 | # | Title | OS | Difficulty | Date | Status |
 |---|---|---|---|---|---|
-| 01 | [Meow](machines/01-meow.md) | Linux | Easy | — | ✓ |
+
+
+## Challenges
+| # | Title | OS | Difficulty | Date | Status |
+|---|---|---|---|---|---|
+
+
+
 
 ## CTF Events
 
