@@ -11,7 +11,7 @@ Personal index of notes constructed while studying the discipline, tagged by tec
 ---
 
 ## Jump to tag
-[Web](#web) · [Express](#express) · [MongoDB](#mongodb) · [NoSQL Injection](#nosql-injection) · [Prototype Pollution](#prototype-pollution) · [Path Traversal](#path-traversal) · [SQL Injection](#sql-injection) · [Authentication](#authentication) · [SSRF](#ssrf) · [SSTI](#ssti) · [Command Injection](#command-injection) · [Crypto](#crypto) · [PWN](#pwn) · [Reverse Engineering](#reverse-engineering) · [Forensics](#forensics)
+[Web](#web) · [Express](#express) · [MongoDB](#mongodb) · [NoSQL Injection](#nosql-injection) · [Prototype Pollution](#prototype-pollution) · [Path Traversal](#path-traversal) · [SQL Injection](#sql-injection) · [Authentication](#authentication) · [SSRF](#ssrf) · [SSTI](#ssti) · [Command Injection](#command-injection) · [Crypto](#crypto) · [PWN](#pwn) · [Reverse Engineering](#reverse-engineering) · [Forensics](#forensics) · [Mongoose](#mongoose) · [Deserialization Exploits](#deserialization-exploits)
 
 ---
 
@@ -19,7 +19,7 @@ Personal index of notes constructed while studying the discipline, tagged by tec
 
 | Date | Tags | Cheat Sheet | Red Flag |
 |---|---|---|---|
-| 2026-07-17 | Web, Express, MongoDB, NoSQL Injection, Prototype Pollution | [Mongo Operators](mongo-operators.md) | Operators are effective outside the database if they are in the same container as the app |
+| 2026-07-17 | Web, Express, MongoDB, NoSQL Injection, Prototype Pollution, Mongoose, Deserialization | [Mongo Operators](mongo-operators.md) | Mongoose <7.3.4 in same container as the web app |
 
 ## Web
 - [Mongo Operators](mongo-operators.md) - NoSql injection for Object Prototype Pollution
@@ -28,7 +28,7 @@ Personal index of notes constructed while studying the discipline, tagged by tec
 - [Mongo Operators](mongo-operators.md) - Tangential - Express is used with MongoDB in MERN stack
 
 ## MongoDB
-- [Mongo Operators](mongo-operators.md) - Requires MongoDB sanitization
+- [Mongo Operators](mongo-operators.md) - Exploit found in Mongoose, a MongoDB ORM
 
 ## NoSQL Injection
 - [Mongo Operators](mongo-operators.md) — `$ne`/`$rename` operator injection via unsanitized `req.body`
@@ -66,4 +66,10 @@ Personal index of notes constructed while studying the discipline, tagged by tec
 ## Forensics
 *(none  yet)*
 
+## Mongoose
+ORM for MongoDB in Express
+- [Mongo Operators](mongo-operators.md) - Mongoose unsafely deserializes mongo commands inside fields
+
+## Deserialization Errors
+- [Mongo Operators](mongo-operators.md) - Targets Mongoose < 7.3.4 deserialization process allowing unsafe operators to execute in the enviroment.
 *Update this file after every writeup — add the row to the relevant platform table above, add a line under each applicable tag section, and add/update a cheat sheet entry if the finding produced one.*

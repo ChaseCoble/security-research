@@ -10,7 +10,7 @@
 | `$where`/`$function` | need code exec, target is Mongo itself | RCE in **mongod**, NOT the app process |
 | `$expr` (in `$match`) | aggregation pipeline built from input | same risk as `$where`, aggregation context |
 
-**The actual trigger, every time:** raw `req.body` (or a piece of it) reaches a write endpoint(for rename/set) or read endpoint(for regex,ne, etc)  with no allowlist. That's the thing to grep for first, not the operator list.
+**The actual trigger, every time:** raw `req.body` (or a piece of it) reaches a write endpoint(for rename/set) or read endpoint(for regex,ne, etc)  with no allowlist. That's the thing to grep for first, not the operator list. The actual exploit is in the deserialization of the fields, that is where it contacts the environment.
 
 **The mistake I made:** tested pollution with a throwaway probe key (`polluted`) and got a false negative — schema strictness blocks *new* fields, but not operators like `$rename` targeting `__proto__`. Pollution tests need to target a **real property name something downstream actually reads** (e.g. `_peername.address`), not an arbitrary probe.
 
