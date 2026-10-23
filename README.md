@@ -12,7 +12,7 @@ and threat analysis.
 | `labs/ps/` | Web Security Academy lab writeups |
 | `labs/htb/` | Hack The Box machines, Sherlocks, Starting Point |
 | `labs/btlo/` | Blue Team Labs Online investigations |
-
+| `case_studies/`| Case Studies on Live Systems |
 
 ## Profiles
 
@@ -24,4 +24,4 @@ and threat analysis.
 
 - BS Computer Science — Fort Hays State University (2025)
 - MPS Cybersecurity — Fort Hays State University (in progress)
-- CompTIA Security+ (scheduled August 2026)
+- CompTIA Security+

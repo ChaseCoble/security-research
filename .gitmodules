@@ -1,0 +1,3 @@
+[submodule "case_studies"]
+	path = case_studies
+	url = https://github.com/ChaseCoble/security_case_studies
